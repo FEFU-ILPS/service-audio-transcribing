@@ -6,8 +6,9 @@ import uvicorn
 
 app = FastAPI()
 
+
 @app.post("/api/v1/transcribe/")
-async def transcribe(audio_file: UploadFile = File()) -> list[str]:
+async def transcribe(audio_file: UploadFile = File()):
     audio_input, sample_rate = sf.read(audio_file.file)
     transcription = process_audio(audio_input, sample_rate)
     return JSONResponse({"transcription": transcription})
