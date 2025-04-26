@@ -33,7 +33,7 @@ class ModelsConfiguration(BaseSettings):
     english: ModelConfiguration = get_model_configuration("english")
 
     # * Опциональные переменные
-    local_path: Path = Path("./models")
+    local_path: Path = Path("./models/src")
 
     def git_dir(self, lang_name: str) -> Path:
         """Функция возвращает обьект пути до директории

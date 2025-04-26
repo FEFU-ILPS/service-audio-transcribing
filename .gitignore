@@ -1,5 +1,5 @@
-# Ignore directory with lang models files
-models/
+# Ignore directory with lang models source files
+models/src/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
