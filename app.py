@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 from configs import configs
 from models import model_manager
-from routers import transcribing_router
+from routers import health_router, transcribing_router
 
 
 @asynccontextmanager
@@ -22,3 +22,4 @@ async def lifespan(app: FastAPI):
 service = FastAPI(lifespan=lifespan)
 
 service.include_router(transcribing_router)
+service.include_router(health_router)
