@@ -22,8 +22,6 @@ COPY ./pyproject.toml .
 
 RUN poetry install --only main --no-interaction --no-ansi --no-root
 
-COPY . /voice_model_service/
-
 COPY . .
 
 EXPOSE 8066
