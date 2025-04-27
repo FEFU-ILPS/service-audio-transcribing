@@ -73,8 +73,6 @@ class ModelManager(metaclass=SingletonMeta):
 
             else:
                 try:
-                    logger.info(f"Downloading model: {model_lang}")
-
                     model_path.mkdir(parents=True, exist_ok=True)
                     gdown.download_folder(model_cfg.GDRIVE_URL, output=str(model_path), quiet=True)
 
