@@ -4,7 +4,7 @@ from numpy import ndarray
 from models import model_manager
 
 
-def transcribe_audio(audio_input: ndarray, sample_rate: int, model_lang: str) -> list[str]:
+def transcribe_audio(audio_input: ndarray, sample_rate: int, model_lang: str) -> str:
     """Извлекает транскрипцию речи из аудиофайла.
 
     Args:
@@ -13,7 +13,7 @@ def transcribe_audio(audio_input: ndarray, sample_rate: int, model_lang: str) ->
         model_lang (str): Язык модели.
 
     Returns:
-        list[str]: Транскрипция распознанной речи.
+        str: Транскрипция распознанной речи.
     """
     processor, model = model_manager.get_model(model_lang)
 
@@ -26,4 +26,4 @@ def transcribe_audio(audio_input: ndarray, sample_rate: int, model_lang: str) ->
 
     predicted_ids = torch.argmax(logits, dim=-1)
     transcription = processor.batch_decode(predicted_ids)
-    return transcription
+    return transcription[0]
