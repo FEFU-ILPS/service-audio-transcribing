@@ -1,7 +1,7 @@
 FROM python:3.13-slim
 
 # Установка espeak-ng и очиска кешей
-RUN apt-get update && apt-get install -y espeak-ng \
+RUN apt-get update && apt-get install -y espeak-ng curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Поиск установочного пути espeak-ng и создание переменных среды
