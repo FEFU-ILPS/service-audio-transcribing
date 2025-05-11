@@ -1,5 +1,7 @@
 from typing import Annotated
+
 from pydantic import BaseModel, Field
+
 from .examples import TRANSCRIPTIONS_EXAMPLE
 
 
