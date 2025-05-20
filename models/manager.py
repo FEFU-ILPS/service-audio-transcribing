@@ -2,6 +2,7 @@ from shutil import rmtree
 from typing import Any
 
 import gdown
+from gdown.exceptions import FolderContentsMaximumLimitError
 from loguru import logger
 from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
 
@@ -80,8 +81,7 @@ class ModelManager(metaclass=SingletonMeta):
                     )
 
                     if downloaded is None:
-                        logger.warning(
-                            "Not a single file has been uploaded. "
+                        msg = (
                             "The directory is probably empty or an incorrect URL was passed. "
                             "Check the environment variables."
                         )
@@ -89,12 +89,12 @@ class ModelManager(metaclass=SingletonMeta):
                         if not list(model_path.iterdir()):
                             model_path.rmdir()
 
-                        continue
+                        raise ValueError(msg)
 
                     else:
                         logger.info(f"Locally saved at '{model_path}'.")
 
-                except Exception as e:
+                except (FolderContentsMaximumLimitError, ValueError) as e:
                     logger.error(f"Unable to download model '{model_lang}': {e}")
                     continue
 
