@@ -8,4 +8,6 @@ from .examples import TRANSCRIPTIONS_EXAMPLE
 class TranscribingResponse(BaseModel):
     """Данные, отправляемые после транскрибирования речи из файла."""
 
-    transcription: Annotated[str, Field(examples=TRANSCRIPTIONS_EXAMPLE)]
+    transcription: Annotated[
+        str, Field(description="Транскрипция речи", examples=TRANSCRIPTIONS_EXAMPLE)
+    ]
