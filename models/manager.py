@@ -62,6 +62,7 @@ class ModelManager(metaclass=SingletonMeta):
 
         configs.models.local_path.mkdir(parents=True, exist_ok=True)
 
+        loaded = 0
         for model_cfg in configs.models:
             model_lang = model_cfg.LANG
             model_path = configs.models.git_dir(model_lang)
@@ -74,20 +75,46 @@ class ModelManager(metaclass=SingletonMeta):
             else:
                 try:
                     model_path.mkdir(parents=True, exist_ok=True)
-                    gdown.download_folder(model_cfg.GDRIVE_URL, output=str(model_path), quiet=True)
+                    downloaded = gdown.download_folder(
+                        model_cfg.GDRIVE_URL, output=str(model_path), quiet=True
+                    )
 
-                    logger.info(f"Locally saved at '{model_path}'.")
+                    if downloaded is None:
+                        logger.warning(
+                            "Not a single file has been uploaded. "
+                            "The directory is probably empty or an incorrect URL was passed. "
+                            "Check the environment variables."
+                        )
+
+                        if not list(model_path.iterdir()):
+                            model_path.rmdir()
+
+                        continue
+
+                    else:
+                        logger.info(f"Locally saved at '{model_path}'.")
 
                 except Exception as e:
                     logger.error(f"Unable to download model '{model_lang}': {e}")
                     continue
 
-            await self._load_model(model_lang, str(model_path), rm_files)
-            logger.info("Done.")
+            if await self._load_model(model_lang, str(model_path), rm_files):
+                loaded += 1
+                logger.info("Done.")
 
-        logger.info("All models loaded successfully.")
+        if loaded == configs.models.count():
+            logger.info("All models loaded successfully.")
 
-    async def _load_model(self, model_lang: str, model_path: str, rm_files: bool) -> None:
+        elif not loaded:
+            logger.warning(
+                "Not a single model has been uploaded. "
+                "It is possible that the service remains running, but is inoperable."
+            )
+
+        else:
+            logger.info(f"Successfully loaded {loaded} of {configs.models.count()} models.")
+
+    async def _load_model(self, model_lang: str, model_path: str, rm_files: bool) -> bool:
         """Загружает модель и процессор по указанному пути.
         Если модель уже загружена, повторная загрузка не выполняется.
 
@@ -116,6 +143,9 @@ class ModelManager(metaclass=SingletonMeta):
 
             except Exception as e:
                 logger.error(f"Error loading the model for the language '{model_lang}': {str(e)}")
+                return False
+
+        return True
 
     def is_model_loaded(self, model_lang: str) -> bool:
         """Выполяет проверку, была ли загружена модель в менеджер ранее.

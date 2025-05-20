@@ -47,6 +47,15 @@ class ModelsConfiguration(BaseSettings):
         """
         return self.local_path / lang_name
 
+    def count(self) -> int:
+        """Функция возвращает количество моделей, переданных
+        сервису для загрузки.
+
+        Returns:
+            int: Количество моделей.
+        """
+        return len(self.__models)
+
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
