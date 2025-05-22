@@ -56,6 +56,9 @@ class ModelManager(metaclass=SingletonMeta):
         """Загружает модели с Google Drive и предзагружает их в менеджер.
         Данные для загрузки определяются в конфигурации.
 
+        Args:
+            rm_files (bool): Флаг удаления файлов после загрузки модели.
+
         Raises:
             RuntimeError: Ошибка при загрузке файлов модели с google drive.
         """
@@ -121,6 +124,7 @@ class ModelManager(metaclass=SingletonMeta):
         Args:
             language (str): Язык модели.
             model_path (str): Путь до директории с моделью.
+            rm_files (bool): Флаг удаления файлов после загрузки модели.
         """
         if self.is_model_loaded(model_lang):
             logger.info(
