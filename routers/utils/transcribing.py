@@ -2,6 +2,7 @@ import torch
 from numpy import ndarray
 
 from models import model_manager
+from service_logging import logger
 
 
 def transcribe_audio(audio_input: ndarray, sample_rate: int, model_lang: str) -> str:
@@ -15,6 +16,7 @@ def transcribe_audio(audio_input: ndarray, sample_rate: int, model_lang: str) ->
     Returns:
         str: Транскрипция распознанной речи.
     """
+    logger.info("Applying model to the audio file...")
     processor, model = model_manager.get_model(model_lang)
 
     input_values = processor(

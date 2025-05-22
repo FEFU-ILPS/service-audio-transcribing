@@ -3,10 +3,10 @@ from typing import Any
 
 import gdown
 from gdown.exceptions import FolderContentsMaximumLimitError
-from loguru import logger
 from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
 
 from configs import configs
+from service_logging import logger
 
 
 class SingletonMeta(type):

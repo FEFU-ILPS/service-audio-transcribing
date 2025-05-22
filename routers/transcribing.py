@@ -6,6 +6,7 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
 
 from models import model_manager
 from schemas import TranscribingResponse
+from service_logging import logger
 
 from .utils.transcribing import transcribe_audio
 
@@ -22,12 +23,14 @@ async def transcribe(
     file: Annotated[UploadFile, File(...)],
 ) -> TranscribingResponse:
     """Получает транскрипцию речи из аудиофайла и возвращает ее в виде текста."""
+    logger.info("Checking Necessary model...")
     if not model_manager.is_model_loaded(lang.value):
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail=f"The model for the language '{lang.value}' is not uploaded in the service.",
         )
 
+    logger.info("Checking file properties...")
     if not file.filename.lower().endswith(".wav"):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -40,9 +43,10 @@ async def transcribe(
             detail="Invalid content type. Only audio/wav is allowed for WAV files.",
         )
 
-    file_binarystream = file.file
-    audio_input, sample_rate = sf.read(file_binarystream)
+    audio_input, sample_rate = sf.read(file.file)
 
+    logger.info("Transcribing audio....")
     transcription = transcribe_audio(audio_input, sample_rate, lang.value)
 
+    logger.success("Done. Transcription extracted.")
     return TranscribingResponse(transcription=transcription)
