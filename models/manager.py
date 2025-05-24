@@ -103,19 +103,19 @@ class ModelManager(metaclass=SingletonMeta):
 
             if await self._load_model(model_lang, str(model_path), rm_files):
                 loaded += 1
-                logger.info("Done.")
+                logger.success("Done.")
 
         if loaded == configs.models.count():
-            logger.info("All models loaded successfully.")
+            logger.success("All models loaded successfully.")
 
         elif not loaded:
-            logger.warning(
+            logger.critical(
                 "Not a single model has been uploaded. "
                 "It is possible that the service remains running, but is inoperable."
             )
 
         else:
-            logger.info(f"Successfully loaded {loaded} of {configs.models.count()} models.")
+            logger.warning(f"Successfully loaded {loaded} of {configs.models.count()} models.")
 
     async def _load_model(self, model_lang: str, model_path: str, rm_files: bool) -> bool:
         """Загружает модель и процессор по указанному пути.
@@ -143,7 +143,7 @@ class ModelManager(metaclass=SingletonMeta):
                 if rm_files:
                     rmtree(model_path, ignore_errors=True)
 
-                logger.info(f"Model for '{model_lang}' loaded succesfully.")
+                logger.success(f"Model for '{model_lang}' loaded succesfully.")
 
             except Exception as e:
                 logger.error(f"Error loading the model for the language '{model_lang}': {str(e)}")
